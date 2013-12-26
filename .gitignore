@@ -14,3 +14,10 @@
 .zsh_history
 contestapplet.conf
 topcoder
+.emacs.d.evil
+.emacs.d/abbrev_defs
+.emacs.d/auto-save-list
+.emacs.d/backup/*
+.emacs.d/eshell
+.emacs.d/tramp
+.emacs.d/url
