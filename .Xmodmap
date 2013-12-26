@@ -1,0 +1,24 @@
+clear Lock
+clear Control
+
+keycode 66 = Control_L
+keycode 135 = Super_R
+add Control = Control_L
+add Control = Control_R
+
+
+! for strict.
+! up left,right
+keycode 111 = 
+keycode 113 = 
+keycode 114 = 
+keycode 116 = 
+keycode 166 = 
+keycode 167 = 
+
+! backspace
+keycode 22 = 
+
+! tab
+!keycode 23 = Escape
+keycode 23 =
