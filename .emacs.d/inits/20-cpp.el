@@ -1,3 +1,6 @@
+(setq-default c-basic-offset 4)
+(setq-default c-indent-level 4)
+
 (require 'flymake-cursor)
 ;;flymake setting
 (require 'flymake)
@@ -16,7 +19,7 @@
 
 ;; Makefile が無くてもC/C++のチェック
 (defun flymake-simple-generic-init (cmd &optional opts)
-  (let* ((temp-file  (flymake-init-create-temp-buffer-copy
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
                       'flymake-create-temp-inplace))
          (local-file (file-relative-name
                       temp-file
@@ -40,42 +43,28 @@
 (push '("\\.\\(cc\\|cpp\\|C\\|CPP\\|hpp\\|h\\)\\'" flymake-cc-init)
       flymake-allowed-file-name-masks)
 
-(setq-default c-basic-offset 4)
-(setq-default c-indent-level 4)
-
 
 (require 'font-lock)
 
-(defun --copy-face (new-face face)
-  "Define NEW-FACE from existing FACE."
-  (copy-face face new-face)
-  (eval `(defvar ,new-face nil))
-  (set new-face new-face))
+(font-lock-add-keywords
+ 'c++-mode
+ (list
+  (cons (regexp-opt '("alignof" "alignas" "constexpr" "decltype" "noexcept"
+                      "nullptr" "static_assert" "thread_local" "override" "final") t)
+        font-lock-keyword-face)
+  (cons (regexp-opt '("auto") t)
+        font-lock-type-face)
+  (cons "\\<[\\-+]*[0-9]*\\.?[0-9]+\\([ulUL]+\\|[eE][\\-+]?[0-9]+\\)?\\>"
+        font-lock-constant-face)
+  (cons "\\<[A-Z]+[A-Z_]+\\>"
+        font-lock-constant-face)
+  (cons "\\<0[xX][0-9A-Fa-f]+\\>"
+        font-lock-constant-face)
 
-(--copy-face 'font-lock-label-face  ; labels, case, public, private, proteced, namespace-tags
-         'font-lock-keyword-face)
-(--copy-face 'font-lock-doc-markup-face ; comment markups such as Javadoc-tags
-         'font-lock-doc-face)
-(--copy-face 'font-lock-doc-string-face ; comment markups
-         'font-lock-comment-face)
+  ;; my specific
+  (cons (regexp-opt '("repeat") t)
+        font-lock-keyword-face)
+  )
+ )
 
 
-(add-hook 'c++-mode-hook
-      '(lambda()
-        (font-lock-add-keywords
-         nil '(;; complete some fundamental keywords
-           ("\\<\\(void\\|unsigned\\|signed\\|char\\|short\\|bool\\|int\\|long\\|float\\|double\\)\\>" . font-lock-keyword-face)
-           ;; add the new C++11 keywords
-           ("\\<\\(alignof\\|alignas\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\|repeat\\|all\\)\\>" . font-lock-keyword-face)
-           ("\\<\\(char[0-9]+_t\\)\\>" . font-lock-keyword-face)
-           ;; PREPROCESSOR_CONSTANT
-           ("\\<[A-Z]+[A-Z_]+\\>" . font-lock-constant-face)
-           ;; hexadecimal numbers
-           ("\\<0[xX][0-9A-Fa-f]+\\>" . font-lock-constant-face)
-           ;; integer/float/scientific numbers
-           ("\\<[\\-+]*[0-9]*\\.?[0-9]+\\([ulUL]+\\|[eE][\\-+]?[0-9]+\\)?\\>" . font-lock-constant-face)
-           ;; user-types (customize!)
-           ("\\<[A-Za-z_]+[A-Za-z_0-9]*_\\(t\\|type\\|ptr\\)\\>" . font-lock-type-face)
-           ("\\<\\(xstring\\|xchar\\)\\>" . font-lock-type-face)
-           ))
-        ) t)
